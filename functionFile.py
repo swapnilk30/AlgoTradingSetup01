@@ -27,3 +27,25 @@ def read_refresh_token(filename="refresh_token.json"):
     except Exception as e:
         logger.exception(f"Failed to read refresh token: {e}")
         return None
+    
+import requests
+
+def SendMessageToTelegram(Message,TelegramBotCredential,ReceiverTelegramID):
+    try:
+        Url = "https://api.telegram.org/bot" + str(TelegramBotCredential) +  "/sendMessage?chat_id=" + str(ReceiverTelegramID)
+        
+        textdata ={ "text":Message}
+        response = requests.request("POST",Url,params=textdata)
+    except Exception as e:
+        Message = str(e) + ": Exception occur in SendMessageToTelegram"
+        print(Message)  
+
+        
+def SendTelegramFile(FileName,TelegramBotCredential,ReceiverTelegramID):
+    Documentfile={'document':open(FileName,'rb')}
+    
+    Fileurl = "https://api.telegram.org/bot" + str(TelegramBotCredential) +  "/sendDocument?chat_id=" + str(ReceiverTelegramID)
+      
+    response = requests.request("POST",Fileurl,files=Documentfile)
+
+    print("Status Code : ",response.status_code)
