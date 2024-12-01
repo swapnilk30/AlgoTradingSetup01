@@ -15,3 +15,7 @@ __pycache__/
 
 # Environment and credentials files (example)
 .env
+
+
+data.json
+refresh_token.json
