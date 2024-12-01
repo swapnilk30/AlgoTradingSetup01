@@ -229,3 +229,98 @@ host = config_data['database']['host']
 port = config_data['database']['port']
 print(f"Host: {host}, Port: {port}")
 ```
+
+#
+
+Creating a virtual environment in Windows is straightforward. Follow these steps:
+
+---
+
+### 1. **Open Command Prompt or PowerShell**
+You can use either Command Prompt or PowerShell. To open:
+- Press `Win + R`, type `cmd`, and hit Enter.
+- Or search for PowerShell in the Start menu and open it.
+
+---
+
+### 2. **Navigate to Your Project Directory**
+Use the `cd` command to go to your project folder. For example:
+
+```bash
+cd C:\path\to\your\project
+```
+
+---
+
+### 3. **Create the Virtual Environment**
+Run the following command to create a virtual environment:
+
+```bash
+python -m venv myenv
+```
+
+Here:
+- `python` refers to the Python executable. Use `python3` if your Python installation is named that.
+- `myenv` is the name of the virtual environment. You can choose a different name.
+
+---
+
+### 4. **Activate the Virtual Environment**
+After creating the environment, activate it:
+
+- **Command Prompt**:
+  ```bash
+  myenv\Scripts\activate
+  ```
+
+- **PowerShell**:
+  ```bash
+  .\myenv\Scripts\Activate
+  ```
+
+You should see the name of the virtual environment (e.g., `(myenv)`) prefixed in your terminal, indicating it is active.
+
+---
+
+### 5. **Install Packages in the Virtual Environment**
+Once the virtual environment is active, you can install packages using `pip`:
+
+```bash
+pip install package_name
+```
+
+For example, to install `PyYAML`:
+
+```bash
+pip install pyyaml
+```
+
+---
+
+### 6. **Deactivate the Virtual Environment**
+To deactivate the virtual environment when you're done, simply type:
+
+```bash
+deactivate
+```
+
+---
+
+### Tips
+- **Check Python Version**:
+  Ensure you're using the correct Python version:
+  ```bash
+  python --version
+  ```
+
+- **Install Dependencies from `requirements.txt`**:
+  If you have a `requirements.txt` file, you can install all dependencies at once:
+  ```bash
+  pip install -r requirements.txt
+  ```
+
+- **Delete the Virtual Environment**:
+  If you no longer need the environment, just delete the `myenv` folder:
+  ```bash
+  rmdir /s /q myenv
+  ```
