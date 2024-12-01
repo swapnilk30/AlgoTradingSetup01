@@ -39,6 +39,11 @@ def fetch_historical_data(smartApi, exchange, symboltoken, interval, fromdate, t
         logger.exception(f"Failed to fetch historical data: {e}")
         return None
 
+
+
+
+
+
 from datetime import datetime, timedelta
 
 # Dynamic date calculation

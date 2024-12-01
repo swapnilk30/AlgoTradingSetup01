@@ -84,4 +84,31 @@ def getLTP_data():
     ltp = LTP['ltp']
 
 
+import util as u
 
+# Fetch historical data
+exchange = "NSE"
+symboltoken = "3045"
+interval = "ONE_MINUTE"
+#fromdate = "2024-02-08 09:00"
+#todate = "2024-02-08 11:16"
+
+
+fromdate, todate  = u.get_dynamic_dates(10)
+hist_data = u.fetch_historical_data(obj, exchange, symboltoken, interval, fromdate, todate)
+
+import pandas as pd
+df = pd.DataFrame(hist_data['data'])
+
+df = df.rename(columns={0:"datetime",1:"open",2:"high",3:"low",4:"Close",5:"volume"})
+df['datetime'] = pd.to_datetime(df["datetime"])
+df = df.set_index('datetime')
+print(df)
+
+import pandas_ta as ta
+
+import indicators as i
+
+df['ema_30'] = i.calculate_ema(df,30)
+
+print(df)
