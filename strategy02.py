@@ -82,3 +82,6 @@ def getLTP_data():
     low = LTP['low']
     close = LTP['close']
     ltp = LTP['ltp']
+
+
+
