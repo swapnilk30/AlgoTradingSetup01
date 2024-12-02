@@ -61,9 +61,6 @@ obj = SmartConnect(api_key=cred['api_key'],access_token=cred['access_token'],ref
 #print(obj.getProfile(cred['refresh_token']))
 
 
-ltp = obj.ltpData(exchange='NSE',tradingsymbol='NIFTY',symboltoken='26000')['data']
-
-print(ltp)
 
 
 
@@ -123,33 +120,104 @@ def initializeSymbolTokenMap():
     token_df['expiry'] = pd.to_datetime(token_df['expiry'])
     token_df = token_df.astype({{'strike':float}})
 
-def getTokenInfo(exchange):
-    strike_price = strike_price*100
+
 
 
 def get_order_info(order_id):
     orb = obj.orderBook()
     # https://www.youtube.com/watch?v=-U8vauvS2MQ&list=PLZ58Qp4m_MwtlvRM4Py2i_VBa0ysuXMdP
 
+import warnings
+warnings.filterwarnings('ignore')
+from datetime import datetime,date
+import math
+
 
 url = 'https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json'
-response = requests.get(url)
+d = requests.get(url).json()
+token_df = pd.DataFrame.from_dict(d)
+print(token_df)
+token_df['expiry'] = pd.to_datetime(token_df['expiry']).apply(lambda x: x.date())
+token_df = token_df.astype({'strike': float})
 
-if response.status_code == 200:
+print(token_df)
 
-    file_path = "ScripMaster.json"
+def getTokenInfo (symbol, exch_seg ='NSE',instrumenttype='OPTIDX',strike_price = '',pe_ce = 'CE',expiry_day = None):
+    df = token_df
+    strike_price = strike_price*100
+    if exch_seg == 'NSE':
+        eq_df = df[(df['exch_seg'] == 'NSE') ]
+        return eq_df[eq_df['name'] == symbol]
+    elif exch_seg == 'NFO' and ((instrumenttype == 'FUTSTK') or (instrumenttype == 'FUTIDX')):
+        return df[(df['exch_seg'] == 'NFO') & (df['instrumenttype'] == instrumenttype) & (df['name'] == symbol)].sort_values(by=['expiry'])
+    elif exch_seg == 'NFO' and (instrumenttype == 'OPTSTK' or instrumenttype == 'OPTIDX'):
+        return df[(df['exch_seg'] == 'NFO') & (df['expiry']==expiry_day) &  (df['instrumenttype'] == instrumenttype) & (df['name'] == symbol) & (df['strike'] == strike_price) & (df['symbol'].str.endswith(pe_ce))].sort_values(by=['expiry'])
 
-    with open(file_path,"wb") as file:
-        file.write(response.content)
-        print("JSON data downloaded successfully to : ",file_path)
 
-else:
-    print("Failed to fetch data from the url : ",url)
+expiry_day = date(2024,12,5)
+symbol = 'NIFTY' #BANKNIFTY | NIFTY
+spot_token = getTokenInfo(symbol).iloc[0]['token']
+ltpInfo = obj.ltpData('NSE',symbol,spot_token)
+
+indexLtp = ltpInfo['data']['ltp']
+print(indexLtp)
+ATMStrike = math.ceil(indexLtp/100)*100
+print(ATMStrike)
+
+ce_strike_symbol = getTokenInfo(symbol,'NFO','OPTIDX',ATMStrike,'CE',expiry_day).iloc[0]
+print(ce_strike_symbol)
+
+pe_strike_symbol = getTokenInfo(symbol,'NFO','OPTIDX',ATMStrike,'PE',expiry_day).iloc[0]
+print(pe_strike_symbol)
 
 
-with open(file_path,"r") as file:
-    json_data = pd.DataFrame(json.load(file))
 
-df = json_data
+def place_order(token,symbol,qty,buy_sell,ordertype,price,variety= 'NORMAL',exch_seg='NSE',triggerprice=0):
+    try:
+        orderparams = {
+            "variety": variety,
+            "tradingsymbol": symbol,
+            "symboltoken": token,
+            "transactiontype": buy_sell,
+            "exchange": exch_seg,
+            "ordertype": ordertype,
+            "producttype": "INTRADAY",
+            "duration": "DAY",
+            "price": price,
+            "squareoff": "0",
+            "stoploss": "0",
+            "quantity": qty,
+            "triggerprice":triggerprice
+            }
+        print(orderparams)
+        orderId=obj.placeOrder(orderparams)
+        print("The order id is: {}".format(orderId))
+    except Exception as e:
+        print("Order placement failed: {}".format(e.message))
 
-token_to_symbol = dict(zip(df['token'],df['symbol']))
+
+place_order(ce_strike_symbol['token'],ce_strike_symbol['symbol'],ce_strike_symbol['lotsize'],'SELL','MARKET',0,'NORMAL','NFO')
+place_order(pe_strike_symbol['token'],pe_strike_symbol['symbol'],pe_strike_symbol['lotsize'],'SELL','MARKET',0,'NORMAL','NFO')
+
+# response = requests.get(url)
+
+# if response.status_code == 200:
+
+#     file_path = "ScripMaster.json"
+
+#     with open(file_path,"wb") as file:
+#         file.write(response.content)
+#         print("JSON data downloaded successfully to : ",file_path)
+
+# else:
+#     print("Failed to fetch data from the url : ",url)
+
+
+# with open(file_path,"r") as file:
+#     json_data = pd.DataFrame(json.load(file))
+
+# df = json_data
+
+# token_to_symbol = dict(zip(df['token'],df['symbol']))
+
+
