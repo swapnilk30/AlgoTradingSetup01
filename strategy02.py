@@ -112,3 +112,44 @@ import indicators as i
 df['ema_30'] = i.calculate_ema(df,30)
 
 print(df)
+
+import requests
+
+def initializeSymbolTokenMap():
+    url = 'https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json'
+    d = requests.get(url).json()
+    global token_df
+    token_df = pd.DataFrame.from_dict(d)
+    token_df['expiry'] = pd.to_datetime(token_df['expiry'])
+    token_df = token_df.astype({{'strike':float}})
+
+def getTokenInfo(exchange):
+    strike_price = strike_price*100
+
+
+def get_order_info(order_id):
+    orb = obj.orderBook()
+    # https://www.youtube.com/watch?v=-U8vauvS2MQ&list=PLZ58Qp4m_MwtlvRM4Py2i_VBa0ysuXMdP
+
+
+url = 'https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json'
+response = requests.get(url)
+
+if response.status_code == 200:
+
+    file_path = "ScripMaster.json"
+
+    with open(file_path,"wb") as file:
+        file.write(response.content)
+        print("JSON data downloaded successfully to : ",file_path)
+
+else:
+    print("Failed to fetch data from the url : ",url)
+
+
+with open(file_path,"r") as file:
+    json_data = pd.DataFrame(json.load(file))
+
+df = json_data
+
+token_to_symbol = dict(zip(df['token'],df['symbol']))
