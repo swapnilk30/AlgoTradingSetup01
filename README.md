@@ -358,3 +358,7 @@ pip install smartapi-python
 pip install websocket-client
 ```
 
+
+```
+k7?i9xUI5c-KCp4k8A%ZX.X*rGX4oHBn
+```
