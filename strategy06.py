@@ -193,7 +193,14 @@ while True:
 
     #ONE_MINUTE
     hist_data = fetch_historical_data(obj, exchange='NSE', symboltoken=spot_token, interval='FIVE_MINUTE', days=10)
+    
 
-    print(hist_data.tail(10))
+    print(hist_data.tail(5))
 
-    time.sleep(30)
+
+    #Get the latest row of OHLC data
+    latest_row = hist_data.iloc[-1]
+
+    print(latest_row)
+
+    time.sleep(5)
