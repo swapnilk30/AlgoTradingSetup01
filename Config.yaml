@@ -3,3 +3,8 @@ AngelOneCred:
   username : xyz
   pwd : 0000
   token : xyz
+
+
+Telegram:
+  TelegramBotCredential: hkfshfhfhl
+  Chat_Id: 0202020
