@@ -71,12 +71,21 @@ import math
 import requests
 import pandas as pd
 
-url = 'https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json'
-d = requests.get(url).json()
-token_df = pd.DataFrame.from_dict(d)
-token_df['expiry'] = pd.to_datetime(token_df['expiry']).apply(lambda x: x.date())
-token_df = token_df.astype({'strike': float})
-print(token_df)
+# url = 'https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json'
+# d = requests.get(url).json()
+# token_df = pd.DataFrame.from_dict(d)
+# token_df['expiry'] = pd.to_datetime(token_df['expiry']).apply(lambda x: x.date())
+# token_df = token_df.astype({'strike': float})
+# print(token_df)
+
+file_path = "ScripMaster.json"
+with open(file_path,"r") as file:
+    token_df = pd.DataFrame(json.load(file))
+    token_df = token_df.from_dict(token_df)
+    token_df['expiry'] = pd.to_datetime(token_df['expiry']).apply(lambda x: x.date())
+    token_df = token_df.astype({'strike': float})
+    print(token_df)
+
 
 
 def getTokenInfo (symbol, exch_seg ='NSE',instrumenttype='OPTIDX',strike_price = '',pe_ce = 'CE',expiry_day = None):
@@ -177,10 +186,14 @@ def fetch_historical_data(smartApi, exchange, symboltoken, interval,days):
         return None
 
 
+import time
+
 while True:
 
-    time.sleep(10)
 
-    hist_data = fetch_historical_data(obj, exchange='NSE', symboltoken=spot_token, interval='ONE_MINUTE', days=10)
+    #ONE_MINUTE
+    hist_data = fetch_historical_data(obj, exchange='NSE', symboltoken=spot_token, interval='FIVE_MINUTE', days=10)
 
     print(hist_data.tail(10))
+
+    time.sleep(30)
