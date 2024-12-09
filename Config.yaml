@@ -1,10 +1,24 @@
-AngelOneCred:
-  api_key : xyz
-  username : xyz
-  pwd : 0000
-  token : xyz
+userid: FA52833
 
+Credential:
+  password: August@2024
+  LogginThroughToken: 0
+  TokenFile: token.txt
+  TwoFA: I45U6RY6735H3F77OF44T2NRQ556RWD4
+  vendor_code: FA52833_U
+  api_secret: 93e8feae7a9cd372f02635196995c572
+  imei: abc1234
+
+Algo_Setup: 
+  TradeMode : Live
 
 Telegram:
-  TelegramBotCredential: hkfshfhfhl
-  Chat_Id: 0202020
+  TelegramBotCredential: 6533788911:AAFpKW2P01iGuCcI4B9evNqEPwHmc-6pLXQ
+  Chat_Id: 455584231
+
+AngelOneCred:
+  api_key : tpHBA4Eb
+  username : S497116
+  pwd : 2704
+  token : CQDN2KSMA6EOSKFIOM7PSK73QU
+  LogginThroughToken: 0
